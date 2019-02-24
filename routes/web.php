@@ -15,5 +15,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('index', 'ValidateController@index')->name('index');
+
 Route::get('create', 'ValidateController@create')->name('create');
-Route::post('create', 'ValidateController@store');
+Route::post('create', 'ValidateController@store')->name('insert');
+
+Route::get('{id}/edit', 'ValidateController@edit')->name('edit');
+Route::post('{id}/edit', 'ValidateController@update')->name('update');
+
+Route::get('{id}/destroy', 'ValidateController@destroy')->name('destroy');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Customers;
 use Illuminate\Http\Request;
 
 class ValidateController extends Controller
@@ -13,7 +14,8 @@ class ValidateController extends Controller
      */
     public function index()
     {
-        //
+        $customer = \App\Customers::all();
+        return view('customer.list', compact('customer'));
     }
 
     /**
@@ -23,7 +25,7 @@ class ValidateController extends Controller
      */
     public function create()
     {
-        return view('create');
+        return view('customer.create');
     }
 
     /**
@@ -34,16 +36,15 @@ class ValidateController extends Controller
      */
     public function store(Request $request)
     {
+        $insert = new Customers();
+        $insert->name = $request->input('name');
+        $insert->email = $request->input('email');
         $this->validate($request,[
-         // number va input la ten cua o input.
-         // required va numeric la dieu kien o input khong duoc de trong va phai la so.
-           'number' => 'required|numeric',
-            'input' => 'required|numeric',
-        ],
-        // noi dung hien thi noi neu truong number khong phai la so.
-        ['number.numeric' => 'phai la so']
-        );
-        echo 'thanh cong';
+           'name'=>'required',
+           'email'=>'required|email|unique:users,email'
+        ]);
+        $insert->save();
+        return redirect()->route('index');
     }
 
     /**
@@ -65,7 +66,8 @@ class ValidateController extends Controller
      */
     public function edit($id)
     {
-        //
+        $edit = Customers::find($id);
+        return view('customer.edit', compact('edit', 'id'));
     }
 
     /**
@@ -77,7 +79,11 @@ class ValidateController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $edit = Customers::find($id);
+        $edit->name = $request->input('edit_name');
+        $edit->email = $request->input('edit_email');
+        $edit->save();
+        return redirect()->route('index');
     }
 
     /**
@@ -88,6 +94,8 @@ class ValidateController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $delete = Customers::find($id);
+        $delete->delete();
+        return redirect()->route('index');
     }
 }
